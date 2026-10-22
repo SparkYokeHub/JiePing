@@ -330,14 +330,14 @@ namespace JiePing
         {
             using (SolidBrush label = new SolidBrush(UiTheme.Muted))
             {
-                g.DrawString(Loc.T("更新服务地址", "Update service URL"), _smallFont, label,
+                g.DrawString(Loc.T("更新清单地址", "Update manifest URL"), _smallFont, label,
                     (int)(42 * _dpi), (int)(672 * _dpi));
             }
             DrawButton(g, _saveUrlRect, Loc.T("保存", "Save"), false, _hoverSaveUrl, true);
             using (SolidBrush hint = new SolidBrush(UiTheme.Faint))
             {
-                g.DrawString(Loc.T("例如 https://你的隧道地址.trycloudflare.com",
-                        "e.g. https://your-tunnel.trycloudflare.com"),
+                g.DrawString(Loc.T("例如 GitHub Releases 的 update.txt 地址",
+                        "e.g. the update.txt asset on GitHub Releases"),
                     _smallFont, hint, (int)(42 * _dpi), (int)(704 * _dpi));
             }
         }
@@ -438,7 +438,7 @@ namespace JiePing
             if (_busy) return;
             _busy = true;
             _state = PageState.Checking;
-            _message = Loc.T("正在连接更新服务…", "Connecting to the update service...");
+            _message = Loc.T("正在连接更新清单…", "Connecting to the update manifest...");
             _messageError = false;
             Invalidate();
             ThreadPool.QueueUserWorkItem(delegate
@@ -560,8 +560,8 @@ namespace JiePing
             if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
                 !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                _message = Loc.T("服务地址必须以 http:// 或 https:// 开头。",
-                    "The URL must start with http:// or https://.");
+                _message = Loc.T("更新清单地址必须以 http:// 或 https:// 开头。",
+                    "The manifest URL must start with http:// or https://.");
                 _messageError = true;
                 _state = PageState.Error;
                 Invalidate();
@@ -576,8 +576,8 @@ namespace JiePing
                 Invalidate();
                 return;
             }
-            UpdateService.SetBaseUrl(url);
-            _message = Loc.T("更新服务地址已保存。", "Update service URL saved.");
+            UpdateService.SetManifestUrl(url);
+            _message = Loc.T("更新清单地址已保存。", "Update manifest URL saved.");
             _messageError = false;
             _state = PageState.Idle;
             Invalidate();

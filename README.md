@@ -4,7 +4,24 @@
 
 打开后只有按时间排列的截图格子；常驻托盘，按快捷键冻结画面即可框选窗口或自由框选区域。
 
-> 本仓库只包含**客户端**源码。配套的在线升级 / 意见反馈 / 在线人数后台不在此仓库，也不提供后台源码。
+> 本仓库只包含**客户端**源码。意见反馈 / 在线人数后台不在此仓库，也不提供后台源码；升级包统一通过 GitHub Releases 发布。
+
+## 下载使用
+
+**直接下载最新版：[JiePing.exe](https://github.com/SparkYokeHub/JiePing/releases/latest/download/JiePing.exe)**
+
+- 单文件绿色版，不需要安装。
+- 下载后双击运行即可；首次运行如遇 SmartScreen，选择“更多信息 → 仍要运行”。
+- 旧版本可以在「软件升级」里检查并更新到最新版。
+- 所有版本：[GitHub Releases](https://github.com/SparkYokeHub/JiePing/releases)
+
+客户端默认读取：
+
+```
+https://github.com/SparkYokeHub/JiePing/releases/latest/download/update.txt
+```
+
+作者发布新版本后，用户点「检查更新」即可收到统一推送的升级包。
 
 ![图库](docs/preview.png)
 
@@ -41,7 +58,8 @@
 - 侧栏收起为图标栏。
 - 中文 / English 切换。
 - 赞赏页（支付宝 / 微信，自愿赞赏，不影响功能）。
-- 可选在线升级和意见反馈（需要作者自己的后台，本仓库不包含后台）。
+- 在线升级：读取 GitHub Releases 的 `update.txt`，在软件内下载并校验升级包。
+- 意见反馈 / 在线人数：需要作者自己的私有后台，本仓库不包含后台源码。
 
 ## 截图
 
@@ -88,11 +106,34 @@ docs\             界面示例图
 build.ps1         编译脚本
 install.ps1       安装与桌面快捷方式
 uninstall.ps1     卸载
+.github\workflows\release.yml  自动构建与发布
 ```
+
+## 发布新版本（作者统一推送）
+
+1. 修改 `src/AssemblyInfo.cs` 里的版本号，例如 `1.9.0.0`。
+2. 提交并推送：
+   ```powershell
+   git add .
+   git commit -m "Release 1.9.0.0"
+   git push
+   ```
+3. 打标签并推送：
+   ```powershell
+   git tag v1.9.0.0
+   git push origin v1.9.0.0
+   ```
+4. GitHub Actions 会自动：
+   - 构建 `JiePing.exe`；
+   - 生成 `update.txt`；
+   - 创建 Release 并上传两个文件。
+5. 客户端读取 `releases/latest/download/update.txt`，用户点「检查更新」即可收到。
+
+标签建议与 `AssemblyInfo.cs` 版本一致，例如 `v1.9.0.0`。
 
 ## 轻量设计
 
-- 单个 exe 约 588 KB，依赖系统自带 .NET Framework 4.8，不打包运行时。
+- 单个 exe 约 589 KB，依赖系统自带 .NET Framework 4.8，不打包运行时。
 - 快捷键监听使用系统键盘钩子；截图浮层只在截图时创建。
 - 缩略图后台加载，最多 3 个并发。
 - 除可选的升级/反馈/在线心跳外，不主动联网。
@@ -101,7 +142,7 @@ uninstall.ps1     卸载
 
 - 程序未做商业代码签名；首次运行可能出现 SmartScreen 提示，选择“更多信息 → 仍要运行”。
 - 赞赏码仅用于自愿支持作者，不购买任何商品或服务，也不解锁任何功能。
-- 在线升级 / 反馈 / 在线人数需要单独的私有后台；本仓库不包含后台源码。
+- 在线升级使用 GitHub Releases；反馈 / 在线人数需要作者自己的私有后台，本仓库不包含后台源码。
 
 ## License
 

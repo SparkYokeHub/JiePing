@@ -35,7 +35,8 @@ namespace JiePing
             CaptureStore.EnsureDirectories();
             StartupManager.RepairPathIfNeeded();
             Loc.IsEnglish = SettingsStore.GetLanguage() == AppLanguage.English;
-            UpdateService.SetBaseUrl(SettingsStore.GetUpdateUrl());
+            UpdateService.SetBaseUrl(SettingsStore.GetServiceUrl());
+            UpdateService.SetManifestUrl(SettingsStore.GetUpdateUrl());
             _presence = new PresenceService();
             _presence.Start();
 

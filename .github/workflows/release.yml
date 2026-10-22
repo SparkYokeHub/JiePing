@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build client
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
+
+      - name: Prepare update manifest
+        shell: powershell
+        run: |
+          $exe = "dist\JiePing.exe"
+          if (-not (Test-Path $exe)) { throw "JiePing.exe was not built." }
+          $version = (Get-Item $exe).VersionInfo.FileVersion
+          $tag = "${{ github.ref_name }}"
+          $url = "https://github.com/${{ github.repository }}/releases/download/$tag/JiePing.exe"
+          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLower()
+          $size = (Get-Item $exe).Length
+          $published = Get-Date -Format "yyyy-MM-dd"
+          $notes = "GitHub Actions automated build. See the Release page for notes."
+          $lines = @(
+            "version=$version",
+            "url=$url",
+            "sha256=$hash",
+            "size=$size",
+            "published=$published",
+            "notes=$notes"
+          )
+          [System.IO.File]::WriteAllText(
+            (Join-Path (Get-Location) "update.txt"),
+            (($lines -join "`r`n") + "`r`n"),
+            (New-Object System.Text.UTF8Encoding($false))
+          )
+          [System.IO.File]::AppendAllText(
+            $env:GITHUB_ENV,
+            "VERSION=$version`n",
+            (New-Object System.Text.UTF8Encoding($false))
+          )
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: JiePing ${{ env.VERSION }}
+          generate_release_notes: true
+          files: |
+            dist/JiePing.exe
+            update.txt

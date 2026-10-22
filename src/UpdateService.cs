@@ -24,11 +24,19 @@ namespace JiePing
     internal static class UpdateService
     {
         public const string DefaultBaseUrl = "http://127.0.0.1:8787";
+        public const string DefaultManifestUrl =
+            "https://github.com/SparkYokeHub/JiePing/releases/latest/download/update.txt";
         private static string _baseUrl = DefaultBaseUrl;
+        private static string _manifestUrl = DefaultManifestUrl;
 
         public static string BaseUrl
         {
             get { return _baseUrl; }
+        }
+
+        public static string ManifestUrl
+        {
+            get { return _manifestUrl; }
         }
 
         public static string CurrentVersion
@@ -46,6 +54,16 @@ namespace JiePing
             _baseUrl = url.Trim().TrimEnd('/');
         }
 
+        public static void SetManifestUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                _manifestUrl = DefaultManifestUrl;
+                return;
+            }
+            _manifestUrl = url.Trim();
+        }
+
         public static string Endpoint(string path)
         {
             return _baseUrl + "/" + (path ?? string.Empty).TrimStart('/');
@@ -54,7 +72,7 @@ namespace JiePing
         public static UpdateManifest Check()
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint("api/update"));
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_manifestUrl);
             request.Method = "GET";
             request.Timeout = 10000;
             request.ReadWriteTimeout = 10000;
@@ -99,9 +117,14 @@ namespace JiePing
                 throw new InvalidOperationException(Loc.T("更新信息缺少下载地址。",
                     "The update response has no download URL."));
             }
-            if (manifest.Url.StartsWith("/"))
+            Uri absolute;
+            if (Uri.TryCreate(manifest.Url, UriKind.Absolute, out absolute))
             {
-                manifest.Url = _baseUrl + manifest.Url;
+                manifest.Url = absolute.ToString();
+            }
+            else
+            {
+                manifest.Url = new Uri(new Uri(_manifestUrl), manifest.Url).ToString();
             }
             return manifest;
         }

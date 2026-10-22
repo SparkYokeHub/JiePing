@@ -137,7 +137,40 @@ namespace JiePing
                     if (node != null)
                     {
                         string value = (node.InnerText ?? string.Empty).Trim();
+                        if (!string.IsNullOrEmpty(value) && LooksLikeManifestUrl(value))
+                        {
+                            return value;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+                return UpdateService.DefaultManifestUrl;
+            }
+        }
+
+        public static string GetServiceUrl()
+        {
+            lock (Sync)
+            {
+                try
+                {
+                    XmlDocument doc = LoadDocument();
+                    XmlNode service = doc.SelectSingleNode("/settings/serviceUrl");
+                    if (service != null)
+                    {
+                        string value = (service.InnerText ?? string.Empty).Trim();
                         if (!string.IsNullOrEmpty(value))
+                        {
+                            return value.TrimEnd('/');
+                        }
+                    }
+                    XmlNode legacy = doc.SelectSingleNode("/settings/updateUrl");
+                    if (legacy != null)
+                    {
+                        string value = (legacy.InnerText ?? string.Empty).Trim();
+                        if (!string.IsNullOrEmpty(value) && !LooksLikeManifestUrl(value))
                         {
                             return value.TrimEnd('/');
                         }
@@ -148,6 +181,14 @@ namespace JiePing
                 }
                 return UpdateService.DefaultBaseUrl;
             }
+        }
+
+        private static bool LooksLikeManifestUrl(string value)
+        {
+            string lower = (value ?? string.Empty).ToLowerInvariant();
+            return lower.EndsWith(".txt") ||
+                   lower.Contains("/releases/") ||
+                   lower.Contains("update.txt");
         }
 
         public static bool SaveUpdateUrl(string url, out string error)
