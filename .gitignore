@@ -1,0 +1,12 @@
+dist/
+release/
+backend/
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.pdb
+*.cache
+test*/
+build-output/
