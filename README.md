@@ -4,7 +4,7 @@
 
 打开后只有按时间排列的截图格子；常驻托盘，按快捷键冻结画面即可框选窗口或自由框选区域。
 
-> 本仓库只包含**客户端**源码。意见反馈 / 在线人数后台不在此仓库，也不提供后台源码；升级包统一通过 GitHub Releases 发布。
+> 本仓库只包含**客户端**源码。升级包统一通过 GitHub Releases 发布。
 
 ## 下载使用
 
@@ -59,7 +59,6 @@ https://github.com/SparkYokeHub/JiePing/releases/latest/download/update.txt
 - 中文 / English 切换。
 - 赞赏页（支付宝 / 微信，自愿赞赏，不影响功能）。
 - 在线升级：读取 GitHub Releases 的 `update.txt`，在软件内下载并校验升级包。
-- 意见反馈 / 在线人数：需要作者自己的私有后台，本仓库不包含后台源码。
 
 ## 截图
 
@@ -142,7 +141,7 @@ uninstall.ps1     卸载
 
 - 程序未做商业代码签名；首次运行可能出现 SmartScreen 提示，选择“更多信息 → 仍要运行”。
 - 赞赏码仅用于自愿支持作者，不购买任何商品或服务，也不解锁任何功能。
-- 在线升级使用 GitHub Releases；反馈 / 在线人数需要作者自己的私有后台，本仓库不包含后台源码。
+- 在线升级使用 GitHub Releases 统一发布。
 
 ## License
 

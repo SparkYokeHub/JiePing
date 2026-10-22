@@ -1,6 +1,5 @@
 dist/
 release/
-backend/
 bin/
 obj/
 .vs/
