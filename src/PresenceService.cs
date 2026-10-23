@@ -11,6 +11,7 @@ namespace JiePing
         private readonly ManualResetEvent _stop = new ManualResetEvent(false);
         private Thread _thread;
         private string _clientId;
+        private DateTime _lastErrorLog;
 
         public void Start()
         {
@@ -33,13 +34,29 @@ namespace JiePing
 
         private void Loop()
         {
+            Log("loop start id=" + _clientId);
             while (true)
             {
                 Send("api/presence");
                 if (_stop.WaitOne(30000))
                 {
+                    Log("loop stop");
                     break;
                 }
+            }
+        }
+
+        private static void Log(string message)
+        {
+            try
+            {
+                File.AppendAllText(
+                    Path.Combine(CaptureStore.HomeDir, "presence.log"),
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + message + "\r\n",
+                    new UTF8Encoding(false));
+            }
+            catch
+            {
             }
         }
 
@@ -67,10 +84,16 @@ namespace JiePing
                 {
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Presence is intentionally silent: the client never shows or
-                // prompts anything when the backend is offline.
+                // prompts anything when the backend is offline. Keep only a
+                // throttled diagnostic line so a long outage cannot fill a log.
+                if ((DateTime.UtcNow - _lastErrorLog).TotalMinutes >= 5)
+                {
+                    _lastErrorLog = DateTime.UtcNow;
+                    Log(path + " failed: " + ex.GetType().Name + " " + ex.Message);
+                }
             }
         }
 

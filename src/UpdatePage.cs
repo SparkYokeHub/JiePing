@@ -80,7 +80,7 @@ namespace JiePing
             _urlBox.MaxLength = 300;
             Controls.Add(_urlBox);
 
-            UpdateService.SetBaseUrl(_urlBox.Text);
+            UpdateService.SetManifestUrl(_urlBox.Text);
             _message = Loc.T("点击「检查更新」获取最新版本。", "Click Check for Updates to look for a new version.");
         }
 
