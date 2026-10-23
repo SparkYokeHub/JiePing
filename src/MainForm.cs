@@ -31,7 +31,7 @@ namespace JiePing
 
         public MainForm(Icon appIcon)
         {
-            Text = Loc.T("截屏", "JiePing");
+            Text = Loc.T("截一下", "JieYiXia");
             Icon = appIcon;
             BackColor = UiTheme.Background;
             ForeColor = UiTheme.Text;
@@ -154,7 +154,7 @@ namespace JiePing
 
         private void ApplyLanguage()
         {
-            Text = Loc.T("截屏", "JiePing");
+            Text = Loc.T("截一下", "JieYiXia");
             UpdateHotkeyUi();
             _sidebar.Invalidate();
             _gallery.Invalidate();

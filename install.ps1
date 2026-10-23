@@ -39,15 +39,19 @@ for ($attempt = 0; $attempt -lt 12; $attempt++) {
 
 # Desktop shortcut name is built from Unicode code points so this script
 # stays compatible with Windows PowerShell's default ANSI file decoding.
-$shortcutName = (-join ([char[]](0x622A, 0x5C4F))) + ".lnk"
+$shortcutName = (-join ([char[]](0x622A, 0x4E00, 0x4E0B))) + ".lnk"
 $desktop = [Environment]::GetFolderPath("Desktop")
+$oldShortcut = Join-Path $desktop ((-join ([char[]](0x622A, 0x5C4F))) + ".lnk")
+if (Test-Path $oldShortcut) {
+    Remove-Item -LiteralPath $oldShortcut -Force
+}
 $shortcutPath = Join-Path $desktop $shortcutName
 $wsh = New-Object -ComObject WScript.Shell
 $shortcut = $wsh.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $destExe
 $shortcut.WorkingDirectory = $destDir
 $shortcut.IconLocation = "$destExe,0"
-$shortcut.Description = "JiePing - Ctrl+Alt"
+$shortcut.Description = "JieYiXia - Ctrl+Alt"
 $shortcut.WindowStyle = 1
 $shortcut.Save()
 

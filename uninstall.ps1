@@ -17,10 +17,13 @@ if ($running.Count -gt 0) {
     Start-Sleep -Milliseconds 700
 }
 
-$shortcutName = (-join ([char[]](0x622A, 0x5C4F))) + ".lnk"
-$shortcutPath = Join-Path ([Environment]::GetFolderPath("Desktop")) $shortcutName
-if (Test-Path $shortcutPath) {
-    Remove-Item -LiteralPath $shortcutPath -Force
+$desktop = [Environment]::GetFolderPath("Desktop")
+$newShortcut = Join-Path $desktop ((-join ([char[]](0x622A, 0x4E00, 0x4E0B))) + ".lnk")
+$oldShortcut = Join-Path $desktop ((-join ([char[]](0x622A, 0x5C4F))) + ".lnk")
+foreach ($path in @($newShortcut, $oldShortcut)) {
+    if (Test-Path $path) {
+        Remove-Item -LiteralPath $path -Force
+    }
 }
 
 $runKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
@@ -37,4 +40,4 @@ if ($RemoveScreenshots) {
     }
 }
 
-Write-Host "JiePing removed."
+Write-Host "JieYiXia removed."

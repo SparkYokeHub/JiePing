@@ -376,7 +376,7 @@ namespace JiePing
                     _closeCardRect.Left + (int)(18 * _dpi),
                     _closeCardRect.Top + (int)(108 * _dpi));
                 g.DrawString(Loc.T("直接退出：程序停止，截图快捷键失效。",
-                        "Exit: JiePing stops and the shortcut no longer works."), _noteFont, note,
+                        "Exit: JieYiXia stops and the shortcut no longer works."), _noteFont, note,
                     _closeCardRect.Left + (int)(18 * _dpi),
                     _closeCardRect.Top + (int)(128 * _dpi));
             }

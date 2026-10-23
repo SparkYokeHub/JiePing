@@ -1,4 +1,4 @@
-# 截屏 · JiePing
+# 截一下 · JieYiXia
 
 一个为 Windows 做的轻量截图工具，使用 C# / .NET Framework 4.8 / WinForms 编写。
 

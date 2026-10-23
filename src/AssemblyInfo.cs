@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("截屏")]
-[assembly: AssemblyDescription("轻量级 Windows 截图工具")]
+[assembly: AssemblyTitle("截一下")]
+[assembly: AssemblyDescription("截一下 · 轻量 Windows 截图工具")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("JiePing")]
-[assembly: AssemblyProduct("截屏")]
+[assembly: AssemblyCompany("JieYiXia")]
+[assembly: AssemblyProduct("截一下")]
 [assembly: AssemblyCopyright("Copyright © 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

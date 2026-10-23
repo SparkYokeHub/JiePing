@@ -39,7 +39,7 @@ namespace JiePing
             _ellipsis.Trimming = StringTrimming.EllipsisCharacter;
             _ellipsis.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip;
 
-            Text = Loc.T("截屏截图", "JiePing Capture");
+            Text = Loc.T("截一下截图", "JieYiXia Capture");
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.Manual;
             Bounds = virtualBounds;

@@ -62,8 +62,8 @@ namespace JiePing
             _index = Math.Max(0, Math.Min(shots.Count - 1, index));
 
             Text = recycleMode
-                ? Loc.T("截屏预览 · 回收站", "Screenshot Preview · Recycle Bin")
-                : Loc.T("截屏预览", "Screenshot Preview");
+                ? Loc.T("截一下预览 · 回收站", "JieYiXia Preview · Recycle Bin")
+                : Loc.T("截一下预览", "JieYiXia Preview");
             Icon = appIcon;
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.Manual;

@@ -56,7 +56,7 @@ namespace JiePing
 
             _tray = new NotifyIcon();
             _tray.Icon = _icon;
-            _tray.Text = Loc.T("截屏", "JiePing");
+            _tray.Text = Loc.T("截一下", "JieYiXia");
             _tray.Visible = true;
             _trayMenu = BuildTrayMenu();
             _tray.ContextMenuStrip = _trayMenu;
@@ -366,7 +366,7 @@ namespace JiePing
             }
             _shownTrayHint = true;
             ShowTrayBalloon(
-                Loc.T("截屏仍在托盘运行", "JiePing is still running in the tray"),
+                Loc.T("截一下仍在托盘运行", "JieYiXia is still running in the tray"),
                 Loc.T("按 ", "Press ") + SettingsStore.GetHotkey().DisplayText +
                 Loc.T(" 随时截图，双击托盘图标打开图库。",
                     " to capture anytime. Double-click the tray icon to open the library."),
@@ -409,7 +409,7 @@ namespace JiePing
                 {
                     _captureMenuItem.ShortcutKeyDisplayString = config.DisplayText;
                 }
-                string text = Loc.T("截屏 · ", "JiePing · ") + config.DisplayText;
+                string text = Loc.T("截一下 · ", "JieYiXia · ") + config.DisplayText;
                 if (text.Length > 63)
                 {
                     text = text.Substring(0, 60) + "...";

@@ -258,7 +258,7 @@ namespace JiePing
             float textX = iconRect.Right + 10 * _dpi;
             using (SolidBrush text = new SolidBrush(UiTheme.Text))
             {
-                g.DrawString(Loc.T("截屏", "JiePing"), _brandFont, text, textX, _brandRect.Top + 8 * _dpi);
+                g.DrawString(Loc.T("截一下", "JieYiXia"), _brandFont, text, textX, _brandRect.Top + 8 * _dpi);
             }
             string subtitle = _selected == AppView.Gallery ? Loc.T("图库", "Library") : _hotkeyText;
             using (SolidBrush muted = new SolidBrush(_selected == AppView.Gallery ? UiTheme.Accent : UiTheme.Faint))

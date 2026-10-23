@@ -158,7 +158,7 @@ namespace JiePing
                 }
             }
 
-            string title = Loc.T("截屏", "JiePing");
+            string title = Loc.T("截一下", "JieYiXia");
             SizeF titleSize = g.MeasureString(title, _titleFont);
             using (SolidBrush text = new SolidBrush(UiTheme.Text))
             {
@@ -186,8 +186,8 @@ namespace JiePing
             DrawEmailCard(g);
             DrawFeedbackCard(g);
 
-            string foot = Loc.T("JiePing  ·  本地截图工具  ·  无需联网",
-                "JiePing  ·  Local screenshot tool  ·  Offline");
+            string foot = Loc.T("截一下  ·  本地截图工具  ·  无需联网",
+                "JieYiXia  ·  Local screenshot tool  ·  Offline");
             SizeF footSize = g.MeasureString(foot, _footFont);
             using (SolidBrush faint = new SolidBrush(UiTheme.Faint))
             {
@@ -426,8 +426,8 @@ namespace JiePing
                 {
                     System.Diagnostics.Process.Start(
                         "mailto:" + ContactEmail + "?subject=" +
-                        Uri.EscapeDataString(Loc.T("截屏 意见反馈 / 想要的功能",
-                            "JiePing feedback / feature request")));
+                        Uri.EscapeDataString(Loc.T("截一下 意见反馈 / 想要的功能",
+                            "JieYiXia feedback / feature request")));
                 }
                 catch (Exception ex)
                 {
