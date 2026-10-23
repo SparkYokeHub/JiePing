@@ -191,6 +191,39 @@ namespace JiePing
                    lower.Contains("update.txt");
         }
 
+        public static bool SaveServiceUrl(string url, out string error)
+        {
+            error = null;
+            try
+            {
+                lock (Sync)
+                {
+                    XmlDocument doc = LoadDocument();
+                    XmlElement root = doc.DocumentElement;
+                    if (root == null)
+                    {
+                        root = doc.CreateElement("settings");
+                        doc.AppendChild(root);
+                    }
+                    XmlElement node = root.SelectSingleNode("serviceUrl") as XmlElement;
+                    if (node == null)
+                    {
+                        node = doc.CreateElement("serviceUrl");
+                        root.AppendChild(node);
+                    }
+                    node.InnerText = (url ?? string.Empty).Trim().TrimEnd('/');
+                    SaveDocument(doc);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                CaptureStore.Log("service url save failed: " + ex.Message);
+                return false;
+            }
+        }
+
         public static bool SaveUpdateUrl(string url, out string error)
         {
             error = null;

@@ -29,6 +29,7 @@ namespace JiePing
         private readonly Font _smallFont;
         private readonly Font _bigFont;
         private readonly TextBox _urlBox;
+        private readonly TextBox _serviceBox;
 
         private float _dpi = 1f;
         private Rectangle _backRect;
@@ -39,6 +40,7 @@ namespace JiePing
         private Rectangle _installRect;
         private Rectangle _openFolderRect;
         private Rectangle _saveUrlRect;
+        private Rectangle _saveServiceRect;
         private Rectangle _progressRect;
         private bool _hoverBack;
         private bool _hoverCheck;
@@ -46,6 +48,7 @@ namespace JiePing
         private bool _hoverInstall;
         private bool _hoverOpenFolder;
         private bool _hoverSaveUrl;
+        private bool _hoverSaveService;
         private PageState _state = PageState.Idle;
         private UpdateManifest _manifest;
         private string _message = string.Empty;
@@ -79,6 +82,15 @@ namespace JiePing
             _urlBox.Text = SettingsStore.GetUpdateUrl();
             _urlBox.MaxLength = 300;
             Controls.Add(_urlBox);
+
+            _serviceBox = new TextBox();
+            _serviceBox.Font = UiTheme.UiFont(9f, FontStyle.Regular);
+            _serviceBox.BackColor = Color.FromArgb(17, 19, 24);
+            _serviceBox.ForeColor = UiTheme.Text;
+            _serviceBox.BorderStyle = BorderStyle.FixedSingle;
+            _serviceBox.Text = SettingsStore.GetServiceUrl();
+            _serviceBox.MaxLength = 300;
+            Controls.Add(_serviceBox);
 
             UpdateService.SetManifestUrl(_urlBox.Text);
             _message = Loc.T("点击「检查更新」获取最新版本。", "Click Check for Updates to look for a new version.");
@@ -120,11 +132,17 @@ namespace JiePing
                 _cardRect.Top + (int)(176 * _dpi), _cardRect.Width - (int)(48 * _dpi),
                 (int)(10 * _dpi));
             _saveUrlRect = new Rectangle(ClientSize.Width - left - (int)(92 * _dpi),
-                (int)(664 * _dpi), (int)(92 * _dpi), (int)(32 * _dpi));
+                (int)(642 * _dpi), (int)(92 * _dpi), (int)(32 * _dpi));
+            _saveServiceRect = new Rectangle(ClientSize.Width - left - (int)(92 * _dpi),
+                (int)(684 * _dpi), (int)(92 * _dpi), (int)(32 * _dpi));
 
-            _urlBox.Location = new Point(left + (int)(130 * _dpi), (int)(666 * _dpi));
+            _urlBox.Location = new Point(left + (int)(130 * _dpi), (int)(644 * _dpi));
             _urlBox.Width = Math.Max(180, ClientSize.Width - left - (int)(92 * _dpi) - _urlBox.Left - (int)(12 * _dpi));
             _urlBox.Height = (int)(26 * _dpi);
+
+            _serviceBox.Location = new Point(left + (int)(130 * _dpi), (int)(686 * _dpi));
+            _serviceBox.Width = Math.Max(180, ClientSize.Width - left - (int)(92 * _dpi) - _serviceBox.Left - (int)(12 * _dpi));
+            _serviceBox.Height = (int)(26 * _dpi);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -331,14 +349,27 @@ namespace JiePing
             using (SolidBrush label = new SolidBrush(UiTheme.Muted))
             {
                 g.DrawString(Loc.T("更新清单地址", "Update manifest URL"), _smallFont, label,
-                    (int)(42 * _dpi), (int)(672 * _dpi));
+                    (int)(42 * _dpi), (int)(648 * _dpi));
             }
             DrawButton(g, _saveUrlRect, Loc.T("保存", "Save"), false, _hoverSaveUrl, true);
             using (SolidBrush hint = new SolidBrush(UiTheme.Faint))
             {
                 g.DrawString(Loc.T("例如 GitHub Releases 的 update.txt 地址",
                         "e.g. the update.txt asset on GitHub Releases"),
-                    _smallFont, hint, (int)(42 * _dpi), (int)(704 * _dpi));
+                    _smallFont, hint, (int)(42 * _dpi), (int)(674 * _dpi));
+            }
+
+            using (SolidBrush label = new SolidBrush(UiTheme.Muted))
+            {
+                g.DrawString(Loc.T("后台服务地址", "Backend service URL"), _smallFont, label,
+                    (int)(42 * _dpi), (int)(690 * _dpi));
+            }
+            DrawButton(g, _saveServiceRect, Loc.T("保存", "Save"), false, _hoverSaveService, true);
+            using (SolidBrush hint = new SolidBrush(UiTheme.Faint))
+            {
+                g.DrawString(Loc.T("局域网填 http://电脑IP:8787；外网填隧道 https://...",
+                        "LAN: http://PC-IP:8787; WAN: a tunnel https://..."),
+                    _smallFont, hint, (int)(42 * _dpi), (int)(716 * _dpi));
             }
         }
 
@@ -583,6 +614,36 @@ namespace JiePing
             Invalidate();
         }
 
+        private void SaveServiceUrl()
+        {
+            string url = (_serviceBox.Text ?? string.Empty).Trim().TrimEnd('/');
+            if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+                !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                _message = Loc.T("后台服务地址必须以 http:// 或 https:// 开头。",
+                    "The backend URL must start with http:// or https://.");
+                _messageError = true;
+                _state = PageState.Error;
+                Invalidate();
+                return;
+            }
+            string error;
+            if (!SettingsStore.SaveServiceUrl(url, out error))
+            {
+                _message = Loc.T("保存失败：", "Save failed: ") + error;
+                _messageError = true;
+                _state = PageState.Error;
+                Invalidate();
+                return;
+            }
+            UpdateService.SetBaseUrl(url);
+            _message = Loc.T("后台服务地址已保存，在线心跳和反馈会使用新地址。",
+                "Backend URL saved. Presence and feedback will use it.");
+            _messageError = false;
+            _state = PageState.Idle;
+            Invalidate();
+        }
+
         private void OpenDownloadFolder()
         {
             try
@@ -606,8 +667,10 @@ namespace JiePing
             bool install = _installRect.Contains(e.Location);
             bool folder = _openFolderRect.Contains(e.Location);
             bool save = _saveUrlRect.Contains(e.Location);
+            bool saveService = _saveServiceRect.Contains(e.Location);
             if (back != _hoverBack || check != _hoverCheck || download != _hoverDownload ||
-                install != _hoverInstall || folder != _hoverOpenFolder || save != _hoverSaveUrl)
+                install != _hoverInstall || folder != _hoverOpenFolder || save != _hoverSaveUrl ||
+                saveService != _hoverSaveService)
             {
                 _hoverBack = back;
                 _hoverCheck = check;
@@ -615,7 +678,8 @@ namespace JiePing
                 _hoverInstall = install;
                 _hoverOpenFolder = folder;
                 _hoverSaveUrl = save;
-                Cursor = back || check || download || install || folder || save
+                _hoverSaveService = saveService;
+                Cursor = back || check || download || install || folder || save || saveService
                     ? Cursors.Hand : Cursors.Default;
                 Invalidate();
             }
@@ -625,7 +689,7 @@ namespace JiePing
         {
             base.OnMouseLeave(e);
             _hoverBack = _hoverCheck = _hoverDownload = _hoverInstall = false;
-            _hoverOpenFolder = _hoverSaveUrl = false;
+            _hoverOpenFolder = _hoverSaveUrl = _hoverSaveService = false;
             Cursor = Cursors.Default;
             Invalidate();
         }
@@ -662,6 +726,10 @@ namespace JiePing
             {
                 SaveUrl();
             }
+            else if (_saveServiceRect.Contains(e.Location))
+            {
+                SaveServiceUrl();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -675,6 +743,7 @@ namespace JiePing
                 _smallFont.Dispose();
                 _bigFont.Dispose();
                 _urlBox.Dispose();
+                _serviceBox.Dispose();
             }
             base.Dispose(disposing);
         }
